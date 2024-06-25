@@ -7,7 +7,7 @@ const Header = () => {
     const {user,isSignedIn}=useUser();
   return (
     <div className='p-3 px-5 flex justify-between shadow-md'>
-        <img src='./logo.svg' width={50} height={50}/>
+        <img src='/logo.svg' width={50} height={50}/>
 
 
         {
