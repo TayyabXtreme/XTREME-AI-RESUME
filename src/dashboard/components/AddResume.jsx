@@ -1,5 +1,5 @@
 import { Loader2, PlusSquare } from 'lucide-react'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
     Dialog,
     DialogContent,
@@ -12,14 +12,21 @@ import { Input } from '@/components/ui/input'
 import {v4 as uuidv4} from 'uuid'
 import { useUser } from '@clerk/clerk-react'
 import useUserResume from '@/hooks/useUserResume'
+import { useToast } from "@/components/ui/use-toast"
+import { Toaster } from '@/components/ui/toaster'
+
   
 
 const AddResume = () => {
 
+
+    
+
     const [openDialog,setOpenDialog]=useState(false)
     const [resumeTitle,setResumeTitle]=useState('')
-    const {addResume,loading,getAllResume}=useUserResume()
+    const {addResume,loading,result}=useUserResume()
     const {user}=useUser()
+    const { toast } = useToast()
 
     const onCreate=()=>{
         const uuid=uuidv4()
@@ -30,18 +37,26 @@ const AddResume = () => {
             fullName:user?.fullName
         }
         addResume(obj)
+
+          if(result){
+            toast({
+                title:'Resume created successfully',
+            })
+            setOpenDialog(false)
+          }
     }
 
-    const allUsers=async()=>{
-        const users=await getAllResume()
-        console.table(users)
-    }
+      
+
+    
+
+
+    
+
 
   return (
     <div>
-      <Button onClick={()=>allUsers()}>
-      
-      All users</Button>
+       <Toaster className={'bg-red'} />
         <div className='p-14 py-24 border flex items-center justify-center bg-secondary rounded-lg h-[250px] hover:scale-105 hover:transition-all hover:shadow-md cursor-pointer border-dashed'
         onClick={()=>setOpenDialog(true)}
         >
