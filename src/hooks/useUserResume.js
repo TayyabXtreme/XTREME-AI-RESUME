@@ -1,24 +1,27 @@
 
-import { firestore } from '@/firebase/firebase';
+import {  firestore } from '@/firebase/firebase';
 import { collection, doc, getDocs, query, setDoc, where} from 'firebase/firestore';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 
 const useUserResume = () => {
 
     const [loading, setLoading] = useState(false);
     const [result, setResult] = useState(true);
+    const navigate = useNavigate();
 
     const addResume = async (input) => {
+        const Id=uniqueId();
         setLoading(true);
-        if (!input.title || !input.uuid || !input.email || !input.fullName) {
+        if (!input.title || !input.email || !input.fullName) {
             setLoading(false);
             return;
         }
         try {
                 const userDoc = {
                     title: input.title,
-                    resumeId: input.uuid,  
+                    resumeId: Id,  
                     userEmail: input.email,
                     fullName: input.fullName,
                    
@@ -26,9 +29,10 @@ const useUserResume = () => {
 
 
 
-                await setDoc(doc(firestore, 'users',input.uuid ), userDoc);
+                await setDoc(doc(firestore, 'users',Id), userDoc);
                 setLoading(false);
                 setResult(true);
+                navigate(`/dashboard/resume/${Id}/edit`);
                
 
 
@@ -54,9 +58,16 @@ const useUserResume = () => {
 
     }
 
+    const uniqueId = () => {
+        const userCollection = collection(firestore, 'users');
+        const docRef = doc(userCollection); 
+        return docRef.id;
+    };
 
 
     return { loading, addResume,getAllResume, result};
 };
+
+
 
 export default useUserResume;

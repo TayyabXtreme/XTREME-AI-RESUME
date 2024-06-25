@@ -8,7 +8,7 @@ const Dashboard = () => {
 
   const {user}=useUser()
   const [resumesList,setResumesList]=useState([])
-  const {getAllResume}=useUserResume()
+  const {getAllResume,uniqueId}=useUserResume()
 
   const allUsers=async()=>{
     const users=await getAllResume(user?.primaryEmailAddress?.emailAddress)
@@ -18,8 +18,8 @@ const Dashboard = () => {
 
 
   useEffect(() => {
-      
     user&&allUsers()
+
 
 }, [user])
   return (

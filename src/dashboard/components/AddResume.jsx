@@ -9,11 +9,11 @@ import {
   } from "@/components/ui/dialog"
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import {v4 as uuidv4} from 'uuid'
 import { useUser } from '@clerk/clerk-react'
 import useUserResume from '@/hooks/useUserResume'
 import { useToast } from "@/components/ui/use-toast"
 import { Toaster } from '@/components/ui/toaster'
+import { useNavigate } from 'react-router-dom'
 
   
 
@@ -28,11 +28,10 @@ const AddResume = () => {
     const {user}=useUser()
     const { toast } = useToast()
 
+
     const onCreate=()=>{
-        const uuid=uuidv4()
         const obj={
             title:resumeTitle,
-            uuid:uuid,
             email:user?.primaryEmailAddress?.emailAddress,
             fullName:user?.fullName
         }
