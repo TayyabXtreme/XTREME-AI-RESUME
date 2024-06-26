@@ -1,6 +1,6 @@
 
 import {  firestore } from '@/firebase/firebase';
-import { collection, doc, getDocs, query, setDoc, where} from 'firebase/firestore';
+import { collection, doc, getDoc, getDocs, query, setDoc, where} from 'firebase/firestore';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -12,6 +12,7 @@ const useUserResume = () => {
     const navigate = useNavigate();
 
     const addResume = async (input) => {
+        setResult(false);
         const Id=uniqueId();
         setLoading(true);
         if (!input.title || !input.email || !input.fullName) {
@@ -24,6 +25,14 @@ const useUserResume = () => {
                     resumeId: Id,  
                     userEmail: input.email,
                     fullName: input.fullName,
+                    firstName:'',
+                    lastName:'',
+                    address:'',
+                    jobTitle:'',
+                    phone:'',
+                    email:'',
+                    summery:'',
+
                    
                 };
 
@@ -64,8 +73,55 @@ const useUserResume = () => {
         return docRef.id;
     };
 
+    const updatePersonalDetailResume=async (resumeId,input)=>{
+        setResult(false);
+        setLoading(true);
+        const userRef=doc(firestore,'users',resumeId);
+        try {
+            await setDoc(userRef,input,{merge:true});
+            setLoading(false);
+            setResult(true);
 
-    return { loading, addResume,getAllResume, result};
+            
+        } catch (error) {
+            setLoading(false);
+            console.log(error)
+        }
+        
+    }
+
+    const updateSummery=async(resumeId,input)=>{
+        setResult(false);
+        setLoading(true);
+        const userRef=doc(firestore,'users',resumeId);
+        try {
+            await setDoc(userRef,input,{merge:true});
+            setLoading(false);
+            setResult(true);
+        } catch (error) {
+            setLoading(false);
+            console.log(error)
+        }
+    }
+
+
+
+    const getCurrentResumeData = async (resumeId) => {
+        const userRef = doc(firestore, 'users', resumeId);
+        try {
+            const userSnap = await getDoc(userRef);
+            if (userSnap.exists()) {
+                return userSnap.data();
+            } else {
+                console.log("No such document!");
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+
+    return { loading, addResume,getAllResume, result,setResult,updatePersonalDetailResume,getCurrentResumeData, updateSummery };
 };
 
 

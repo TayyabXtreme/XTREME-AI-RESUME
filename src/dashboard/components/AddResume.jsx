@@ -12,7 +12,7 @@ import { Input } from '@/components/ui/input'
 import { useUser } from '@clerk/clerk-react'
 import useUserResume from '@/hooks/useUserResume'
 import { useToast } from "@/components/ui/use-toast"
-import { Toaster } from '@/components/ui/toaster'
+
 import { useNavigate } from 'react-router-dom'
 
   
@@ -24,7 +24,7 @@ const AddResume = () => {
 
     const [openDialog,setOpenDialog]=useState(false)
     const [resumeTitle,setResumeTitle]=useState('')
-    const {addResume,loading,result}=useUserResume()
+    const {addResume,loading,result,setResult}=useUserResume()
     const {user}=useUser()
     const { toast } = useToast()
 
@@ -42,6 +42,7 @@ const AddResume = () => {
                 title:'Resume created successfully',
             })
             setOpenDialog(false)
+            setResult(false)
           }
     }
 
@@ -55,7 +56,7 @@ const AddResume = () => {
 
   return (
     <div>
-       <Toaster className={'bg-red'} />
+       
         <div className='p-14 py-24 border flex items-center justify-center bg-secondary rounded-lg h-[250px] hover:scale-105 hover:transition-all hover:shadow-md cursor-pointer border-dashed'
         onClick={()=>setOpenDialog(true)}
         >
