@@ -121,7 +121,7 @@ const useUserResume = () => {
     };
 
 
-    return { loading, addResume,getAllResume, result,setResult,updatePersonalDetailResume,getCurrentResumeData, updateSummery };
+    return { loading, addResume,getAllResume, result,setResult,updatePersonalDetailResume,getCurrentResumeData, updateSummery,setLoading };
 };
 
 

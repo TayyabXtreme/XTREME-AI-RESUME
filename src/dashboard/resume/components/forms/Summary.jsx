@@ -3,13 +3,14 @@ import { Textarea } from '@/components/ui/textarea'
 import { useToast } from '@/components/ui/use-toast'
 import { ResumeInfoContext } from '@/context/ResumeInfoContext'
 import useUserResume from '@/hooks/useUserResume'
+import { AIChatSession } from '../../../../service/AIModal'
 
 import { Brain, LoaderCircle } from 'lucide-react'
 import React, { useContext, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 
 
-const prompt="Job Title: Full stack Developer , Depends on job title give me list of  summery for 3 experience level, Mid Level and Freasher level in 3 -4 lines in array format, With summery and experience_level Field in JSON Format"
+const prompt="Job Title: {jobTitle} , Depends on job title give me list of  summery for 3 experience level, Mid Level and Freasher level in 3 -4 lines in array format, With summery and experience_level Field in JSON Format"
 const Summary = ({enableNext}) => {
 
     
@@ -19,9 +20,11 @@ const Summary = ({enableNext}) => {
 
     const [summery,setSummery]=useState('')
 
-    const {updateSummery,loading,result,setResult}=useUserResume()
+    const {updateSummery,loading,result,setResult,setLoading}=useUserResume()
 
     const { toast } = useToast()
+
+    const [aiGeneratedSummery,setAIGeneratedSummery]=useState([])
 
     
     useEffect(()=>{
@@ -35,6 +38,27 @@ const Summary = ({enableNext}) => {
         })
 
     },[summery])
+
+    const GenerateSummeryFormAI=async()=>{
+        setLoading(true)
+        const PROMPT=prompt.replace('{jobTitle}',resumeInfo?.jobTitle)
+        const result=await AIChatSession.sendMessage(PROMPT)
+
+        try {
+            const result=await AIChatSession.sendMessage(PROMPT)
+            setLoading(false)
+            setAIGeneratedSummery(JSON.parse(result.response.text()))
+        } catch (error) {
+            setLoading(false)
+            console.log(error)
+
+            
+        }
+
+
+        
+        
+    }
 
     
 
@@ -72,10 +96,13 @@ const Summary = ({enableNext}) => {
             <form className='mt-7 ' onSubmit={onSave}>
             <div className='flex justify-between items-end'>
                 <label>Add Summery</label>
-                <Button type='button' variant='outline' className='border-primary text-primary flex gap-2' size='sm' ><Brain className='h-4 w-4'/> Generate from AI</Button>
+                <Button 
+                onClick={GenerateSummeryFormAI}
+                type='button' variant='outline' className='border-primary text-primary flex gap-2' size='sm' ><Brain className='h-4 w-4'/> Generate from AI</Button>
             </div>
             <Textarea className='mt-5'
                 required
+                value={summery}
                 onChange={(e)=>setSummery(e.target.value)}
             />
             <div className='mt-2 flex justify-end'>
@@ -86,6 +113,18 @@ const Summary = ({enableNext}) => {
             </div>
            </form>
            </div>
+
+           {aiGeneratedSummery&& <div className='my-5'>
+            <h2 className='font-bold text-lg'>Suggestions</h2>
+            {aiGeneratedSummery?.map((item,index)=>(
+                <div key={index} 
+                onClick={()=>setSummery(item?.summary)}
+                className='p-5 shadow-lg my-4 rounded-lg cursor-pointer'>
+                    <h2 className='font-bold my-1 text-primary'>Level: {item?.experience_level}</h2>
+                    <p>{item?.summary}</p>
+                </div>
+            ))}
+        </div>}
            
     </div>
   )
