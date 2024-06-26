@@ -2,6 +2,45 @@
   @tailwind components;
   @tailwind utilities;
 
+
+  @media print{
+    #no-print{
+      display: none;
+    }
+
+    #print-area{
+      display: block;
+    }
+
+    body{
+      margin: 0;
+      padding: 0;
+      box-shadow: none;
+    }
+  }
+
+  @page{
+    size: auto;
+    margin: 0mm;
+  }
+
+  
+
+  .rsw-ce ul {
+    list-style: disc;
+    padding-left: 2em;
+  }
+  
+  .rsw-ce ol {
+    list-style: decimal;
+    padding-left: 2em;
+  }
+
+  ol, ul, menu {
+    list-style: disc;
+    margin: 0;
+    padding: 0;
+}
   @layer base {
     :root {
       --background: 0 0% 100%;
